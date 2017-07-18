@@ -1,6 +1,6 @@
 from keras import backend as K
 from keras.layers.core import Layer
-from keras import initializations, activations
+from keras import initializers, activations
 
 from seya.regularizers import GaussianKL
 

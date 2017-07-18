@@ -3,7 +3,6 @@ import json
 import logging
 import os
 from random import shuffle
-
 import h5py
 from keras.models import model_from_json
 import numpy as np

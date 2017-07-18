@@ -120,6 +120,7 @@ def main(train_file,
                 for t, char in enumerate(smile):
                     Z[i, t, char_to_index[char]] = 1
 
+            print(Z)
             string = ""
             for i in self.model.predict(Z):
                 for j in i:
@@ -214,16 +215,16 @@ def main(train_file,
             model.add(BatchNormalization(mode=0, axis=-1))
 
     if parameters['terminal_gru']:
-        model.add(TerminalGRU(n_chars, 
+        model.add(TerminalGRU(n_chars,
                               return_sequences=True,
                               activation='softmax',
                               temperature=TEMPERATURE,
                               dropout_U=parameters['tgru_dropout']))
     else:
-        model.add(GRU(n_chars, 
+        model.add(GRU(n_chars,
                       return_sequences=True,
                       activation='softmax',
-                      dropout_U=parameters['tgru_dropout']))
+                      recurrent_dropout=parameters['tgru_dropout']))
 
     if parameters['optim'] == 'adam':
         optim = Adam(lr=parameters['lr'], beta_1=parameters['momentum'])
@@ -263,16 +264,15 @@ def main(train_file,
                                                verbose=1)
 
         model.fit(X, X, batch_size=parameters['batch_size'],
-                  nb_epoch=parameters['epochs'],
+                  epochs=parameters['epochs'],
                   callbacks=[smile_checker, vae_schedule, cbk, cbk_post_VAE],
-                  validation_split=parameters['val_split'],
-                  show_accuracy=True)
+                  validation_split=parameters['val_split'],)
+                  #metrics=['accuracy'])
     else:
         model.fit(X, X, batch_size=parameters['batch_size'],
-                  nb_epoch=parameters['epochs'],
+                  epochs=parameters['epochs'],
                   callbacks=[smile_checker, cbk],
-                  validation_split=parameters['val_split'],
-                  show_accuracy=True)
+                  validation_split=parameters['val_split'],)
 
     end = time.time()
     print(parameters)
